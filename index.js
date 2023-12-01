@@ -66,10 +66,19 @@ const generateID = () => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
+    const allNames = persons.map(person => person.name)
 
-    if (!body.name || !body.number) {
+    if (!body.name) {
         return response.status(400).json({
-            error: 'name or number missing'
+            error: 'name missing'
+        })
+    } else if (!body.number) {
+        return response.status(400).json({
+            error: 'number missing'
+        })
+    } else if (allNames.includes(body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
         })
     }
 
