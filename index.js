@@ -56,34 +56,27 @@ app.get('/api/persons', (request, response) => {
 //     return newID
 // }
 
-// app.post('/api/persons', (request, response) => {
-//     const body = request.body
-//     const allNames = persons.map(person => person.name)
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    if (!body.name) {
+        return response.status(400).json({
+            error: 'name missing'
+        })
+    } else if (!body.number) {
+        return response.status(400).json({
+            error: 'number missing'
+        })
+    } 
 
-//     if (!body.name) {
-//         return response.status(400).json({
-//             error: 'name missing'
-//         })
-//     } else if (!body.number) {
-//         return response.status(400).json({
-//             error: 'number missing'
-//         })
-//     } else if (allNames.includes(body.name)) {
-//         return response.status(400).json({
-//             error: 'name must be unique'
-//         })
-//     }
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
 
-//     const person = {
-//         id: generateID(),
-//         name: body.name,
-//         number: body.number
-//     }
-
-//     persons = persons.concat(person)
-
-//     response.json(person)
-// })
+    person.save().then(result => {
+        response.json(person)
+    })
+})
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
